@@ -1,6 +1,8 @@
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
+import useResizeObserver from "use-resize-observer";
 import {AnimatePresence, motion, useDragControls, useMotionValue, useAnimationFrame, useTransform} from "framer-motion";
 import throttle from "lodash/throttle";
+import clamp from "lodash/clamp";
 import styled from "@emotion/styled";
 import {useSizeRatio} from "../../../../shared/hooks/useSizeRatio";
 import {Image} from "../../../../shared/ui/Image";
@@ -40,16 +42,16 @@ const PauseButtonStyled = styled(PauseButton)`
 
 const CharacterStyled = styled(Character)`
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    height: calc(${({level}) => LEVEL_TO_CHARACTER_SIZE[level][1] + 20}px * ${({ratio}) => ratio});
 `;
 
 const ProgressBarStyled = styled(ProgressBar)`
     position: absolute;
-    top: calc(-12px * ${({ratio}) => ratio});
+    top: 0;
     left: 50%;
-    transform: translate(-50%, -100%);
+    transform: translateX(-50%);
     width: calc(72px * ${({ratio}) => ratio});
 `;
 
@@ -79,25 +81,79 @@ const checkIsColliding = (circle, ellipse) => {
 export function Game({className, level, onNext, onReset}) {
     const sizeRatio = useSizeRatio();
     const wrapperRef = useRef();
+    const [wrapperRect, setWrapperRect] = useState(null);
     const [isPaused, setIsPaused] = useState(false);
     const [isLost, setIsLost] = useState(false);
     const [progress, setProgress] = useState(0);
     const [livesLeft, setLivesLeft] = useState(MAX_LIVES);
     const [tasks, setTasks] = useState(TASKS_BY_LEVEL[level]);
     const [direction, setDirection] = useState([0, 0]);
-    const isCollidingRef = useRef(false);
+    const collidedTaskRef = useRef(null);
     const controlExistsRef = useRef(false);
     const [controlEvent, setControlEvent] = useState(null);
     const [controlPosition, setControlPosition] = useState(null);
     const dragControls = useDragControls();
-    const characterPosition = useMotionValue([0, 0]);
-    const boardPositionX = useTransform(
+    const characterPosition = useMotionValue([
+        WIDTH/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2,
+        HEIGHT/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2,
+    ]);
+    const characterDelta = useTransform(
         characterPosition,
-        prev => `calc(${-prev[0]}px - 50%)`,
+        prev => {
+            const leftDelta = prev[0] - wrapperRect?.width/2 + LEVEL_TO_CHARACTER_SIZE[level][0]/2;
+            const rightDelta = prev[0] + wrapperRect?.width/2 + LEVEL_TO_CHARACTER_SIZE[level][0]/2 - WIDTH;
+            const topDelta = prev[1] - wrapperRect?.height/2 + LEVEL_TO_CHARACTER_SIZE[level][1]/2;
+            const bottomDelta = prev[1] + wrapperRect?.height/2 + LEVEL_TO_CHARACTER_SIZE[level][1]/2 - HEIGHT;
+
+            let x;
+            let y;
+
+            if (Math.abs(leftDelta) > Math.abs(rightDelta)) {
+                x = clamp(
+                    rightDelta,
+                    0,
+                    wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2,
+                );
+            } else {
+                x = clamp(
+                    leftDelta,
+                    LEVEL_TO_CHARACTER_SIZE[level][0]/2 - wrapperRect?.width/2,
+                    0,
+                );
+            }
+
+            if (Math.abs(topDelta) > Math.abs(bottomDelta)) {
+                y = clamp(
+                    bottomDelta,
+                    0,
+                    wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2,
+                );
+            } else {
+                y = clamp(
+                    topDelta,
+                    LEVEL_TO_CHARACTER_SIZE[level][1]/2 - wrapperRect?.height/2,
+                    0,
+                );
+            }
+
+            return [x, y];
+        }
+    );
+    const boardPositionX = useTransform(
+        [characterPosition, characterDelta],
+        ([prevPosition, prevDelta]) => `${-prevPosition[0] + wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2 + prevDelta[0]}px`,
     );
     const boardPositionY = useTransform(
-        characterPosition,
-        prev => `calc(${-prev[1]}px - 50%)`,
+        [characterPosition, characterDelta],
+        ([prevPosition, prevDelta]) => `${-prevPosition[1] + wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2 + prevDelta[1]}px`,
+    );
+    const characterPositionX = useTransform(
+        characterDelta,
+        prev => `${wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2 + prev[0]}px`,
+    );
+    const characterPositionY = useTransform(
+        characterDelta,
+        prev => `${wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2 + prev[1]}px`,
     );
     const maxProgress = TASKS_BY_LEVEL[level].filter(({allowed}) => allowed).length;
 
@@ -107,17 +163,19 @@ export function Game({className, level, onNext, onReset}) {
                 return;
             }
 
-            const signY = info.offset.y > 0 ? 1 : info.offset.y < 0 ? -1 : 0;
-            const signX = info.offset.x > 0 ? 1 : info.offset.x < 0 ? -1 : 0;
+            const { x, y } = info.offset;
 
-            setDirection([signX * CHARACTER_STEP, signY * CHARACTER_STEP]);
+            const topRatio = clamp(y, -30, 30) / 30
+            const leftRatio = clamp(x, -30, 30) / 30
+
+            setDirection([leftRatio * CHARACTER_STEP, topRatio * CHARACTER_STEP]);
         }, 50),
         [],
     );
 
     const handleMove = useCallback(
-        throttle((tasks, onNext) => {
-            if (isCollidingRef.current) {
+        throttle((tasks) => {
+            if (collidedTaskRef.current) {
                 return;
             }
 
@@ -130,8 +188,8 @@ export function Game({className, level, onNext, onReset}) {
                     r: size/2,
                 };
                 const ellipse = {
-                    x: WIDTH/2 + x + LEVEL_TO_CHARACTER_SIZE[level][0]/2,
-                    y: HEIGHT/2 + y + LEVEL_TO_CHARACTER_SIZE[level][1]/2,
+                    x: x + LEVEL_TO_CHARACTER_SIZE[level][0]/2,
+                    y: y + LEVEL_TO_CHARACTER_SIZE[level][1]/2 + 20,
                     rx: LEVEL_TO_CHARACTER_SIZE[level][0]/2,
                     ry: LEVEL_TO_CHARACTER_SIZE[level][1]/2,
                 };
@@ -140,22 +198,8 @@ export function Game({className, level, onNext, onReset}) {
             });
 
             if (collidedTask) {
-                isCollidingRef.current = true;
+                collidedTaskRef.current = collidedTask;
                 setTasks(prev => prev.filter(task => task.id !== collidedTask.id))
-
-                if (collidedTask.allowed) {
-                    if (progress - 1 === maxProgress) {
-                        onNext?.();
-                    }
-
-                    setProgress(prev => prev + 1);
-                } else {
-                    if (livesLeft <= 1) {
-                        setIsLost(true);
-                    }
-
-                    setLivesLeft(prev => prev - 1);
-                }
             }
         }, 50),
         []
@@ -166,10 +210,9 @@ export function Game({className, level, onNext, onReset}) {
             return;
         }
 
-        const rect = wrapperRef.current?.getBoundingClientRect?.();
         controlExistsRef.current = true;
         setControlEvent(event);
-        setControlPosition([event.clientX - rect.left, event.clientY - rect.top]);
+        setControlPosition([event.clientX - wrapperRect.left, event.clientY - wrapperRect.top]);
     };
 
     const handleTapEnd = () => {
@@ -184,6 +227,17 @@ export function Game({className, level, onNext, onReset}) {
         setDirection([0, 0]);
     };
 
+    const updateWrapperRect = () => {
+        const rect = wrapperRef.current?.getBoundingClientRect?.();
+        setWrapperRect(rect)
+    };
+
+    useLayoutEffect(() => {
+        updateWrapperRect()
+    }, [])
+
+    useResizeObserver({ onResize: updateWrapperRect, ref: wrapperRef })
+
     useEffect(() => {
         if (controlEvent) {
             dragControls.start(controlEvent);
@@ -191,10 +245,28 @@ export function Game({className, level, onNext, onReset}) {
     }, [controlEvent]);
 
     useEffect(() => {
-        isCollidingRef.current = false;
+        if (collidedTaskRef.current && collidedTaskRef.current.allowed) {
+            setProgress(prev => prev + 1);
+            collidedTaskRef.current = null;
+        } else if (collidedTaskRef.current) {
+            setLivesLeft(prev => prev - 1);
+            collidedTaskRef.current = null;
+        }
 
-        return characterPosition.on('change', () => handleMove(tasks, onNext))
-    }, [tasks, handleMove]);
+        return characterPosition.on('change', () => handleMove(tasks))
+    }, [tasks]);
+
+    useEffect(() => {
+        if (progress === maxProgress) {
+            onNext?.();
+        }
+    }, [progress]);
+
+    useEffect(() => {
+        if (livesLeft === 0) {
+            setIsLost(true);
+        }
+    }, [livesLeft]);
 
     useAnimationFrame(() => {
         if (!controlExistsRef.current) {
@@ -202,8 +274,16 @@ export function Game({className, level, onNext, onReset}) {
         }
 
         const [prevX, prevY] = characterPosition.get();
-        const nextX = prevX + direction[0];
-        const nextY = prevY + direction[1];
+        const nextX = clamp(
+            prevX + direction[0],
+            0,
+            WIDTH - LEVEL_TO_CHARACTER_SIZE[level][0],
+        );
+        const nextY = clamp(
+            prevY + direction[1],
+            0,
+            HEIGHT - LEVEL_TO_CHARACTER_SIZE[level][1] - 20,
+        );
 
         characterPosition.set([nextX, nextY]);
     });
@@ -230,7 +310,7 @@ export function Game({className, level, onNext, onReset}) {
                             size={size}
                             ratio={sizeRatio}
                             exit={{scale: 0.8, opacity: 0}}
-                            transition={{ duration: 0.1 }}
+                            transition={{duration: 0.1}}
                         />
                     ))}
                 </AnimatePresence>
@@ -239,8 +319,9 @@ export function Game({className, level, onNext, onReset}) {
                 level={level}
                 direction={direction[0] || direction[1]}
                 ratio={sizeRatio}
+                style={{x: characterPositionX, y: characterPositionY}}
             >
-                <ProgressBarStyled value={progress} max={maxProgress} ratio={sizeRatio} />
+                <ProgressBarStyled value={progress} max={maxProgress} ratio={sizeRatio}/>
             </CharacterStyled>
             <AnimatePresence>
                 {!!controlPosition && (
@@ -257,14 +338,14 @@ export function Game({className, level, onNext, onReset}) {
                         }}
                         animate={{opacity: 1}}
                         exit={{opacity: 0}}
-                        transition={{ duration: 0.1 }}
+                        transition={{duration: 0.1}}
                     />
                 )}
             </AnimatePresence>
             <LivesStyled ratio={sizeRatio}>
                 <AnimatePresence initial={false}>
                     {Array(livesLeft).fill(null).map((_, index) => (
-                        <LiveStyled key={index} ratio={sizeRatio} />
+                        <LiveStyled key={index} ratio={sizeRatio}/>
                     ))}
                 </AnimatePresence>
             </LivesStyled>
@@ -277,7 +358,7 @@ export function Game({className, level, onNext, onReset}) {
                 opened={isPaused}
                 onResume={() => setIsPaused(false)}
             />
-            <LoseModal opened={isLost} onReset={onReset} />
+            <LoseModal opened={isLost} onReset={onReset}/>
         </Wrapper>
     );
 }

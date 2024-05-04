@@ -23,9 +23,8 @@ const WrapperStyled = styled(motion.div)`
 
 const ImageStyled = styled(motion.div)`
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
     width: calc(${WIDTH}px * ${({ratio}) => ratio});
     height: calc(${HEIGHT}px * ${({ratio}) => ratio});
     background-color: #EBE9EF;
