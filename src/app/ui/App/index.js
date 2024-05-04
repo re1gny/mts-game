@@ -21,6 +21,7 @@ const GLOBAL_STYLES = {
         '-webkit-font-smoothing': 'antialiased',
         '-moz-osx-font-smoothing': 'grayscale',
         backgroundColor: '#EBE9EF',
+        overflow: 'hidden',
     },
     '#root': {
         height: '100%',
