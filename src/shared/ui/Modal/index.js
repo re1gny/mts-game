@@ -51,14 +51,14 @@ export const Modal = ({ initial = true, opened, children, ...rest }) => {
                     initial={{opacity: 0}}
                     animate={{opacity: 1}}
                     exit={{opacity: 0}}
-                    transition={{duration: 0.1, type: 'tween'}}
+                    transition={{type: 'spring', duration: 0.3}}
                 >
                     <ModalBackdrop ratio={sizeRatio} />
                     <ModalContent
                         ratio={sizeRatio}
                         initial={{scale: 0.85}}
                         animate={{scale: 1}}
-                        transition={{ duration: 0.15, type: 'tween' }}
+                        transition={{type: 'spring', duration: 0.3}}
                         {...rest}
                     >
                         {children}

@@ -322,7 +322,7 @@ export function Game({className, level, onNext, onReset}) {
                             size={size}
                             ratio={sizeRatio}
                             exit={{scale: 0.8, opacity: 0}}
-                            transition={{duration: 0.1, type: 'tween'}}
+                            transition={{type: "spring", velocity: 4}}
                             style={{willChange}}
                         />
                     ))}

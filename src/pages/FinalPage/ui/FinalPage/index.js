@@ -262,7 +262,6 @@ export function FinalPage() {
                             ratio={sizeRatio}
                             initial={{opacity: 0}}
                             animate={{opacity: 0.5}}
-                            transition={{duration: 0.2, type: 'tween'}}
                         >
                             <LeftSentIcon src={Heart} ratio={sizeRatio} />
                             <SentText size="s" ratio={sizeRatio}>
@@ -275,7 +274,6 @@ export function FinalPage() {
                             key='not-sent'
                             initial={{opacity: 1}}
                             exit={{opacity: 0}}
-                            transition={{duration: 0.2, type: 'tween'}}
                             ratio={sizeRatio}
                             onSubmit={handleSubmit}
                         >
