@@ -1,6 +1,6 @@
 import {useState} from "react";
 import styled from "@emotion/styled";
-import {motion} from "framer-motion";
+import {AnimatePresence, motion} from "framer-motion";
 import {Logo} from "../../../../shared/ui/Logo";
 import {Button} from "../../../../shared/ui/Button";
 import {Text} from "../../../../shared/ui/Text";
@@ -18,6 +18,7 @@ import { ReactComponent as Sign4 } from '../../assets/sign4.svg';
 import { ReactComponent as Character1 } from '../../assets/character1.svg';
 import { ReactComponent as Character2 } from '../../assets/character2.svg';
 import { ReactComponent as Character3 } from '../../assets/character3.svg';
+import { ReactComponent as Heart } from '../../assets/heart.svg';
 
 const Wrapper = styled(motion.div)`
     position: relative;
@@ -133,7 +134,29 @@ const TextStyled = styled(Text)`
     text-align: center;
 `;
 
-const FormWrapper = styled.form`
+const SentWrapper = styled(motion.div)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: calc(58px * ${({ratio}) => ratio});
+`;
+
+const LeftSentIcon = styled(Image)`
+    width: calc(28.8px * ${({ratio}) => ratio});
+    height: calc(25.5px * ${({ratio}) => ratio});
+`;
+
+const SentText = styled(Text)`
+    margin-left: calc(17px * ${({ratio}) => ratio});
+`;
+
+const RightSentIcon = styled(Image)`
+    width: calc(28.8px * ${({ratio}) => ratio});
+    height: calc(25.5px * ${({ratio}) => ratio});
+    margin-left: calc(17px * ${({ratio}) => ratio});
+`;
+
+const FormWrapper = styled(motion.form)`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -190,6 +213,7 @@ export function FinalPage() {
     const sizeRatio = useSizeRatio();
     const [email, setEmail] = useState('');
     const [isAgreed, setIsAgreed] = useState(false);
+    const [isSent, setIsSent] = useState(false);
 
     const isSendingEmailDisabled = !email.length || !/\S+@\S+\.\S+/.test(email) || !isAgreed;
 
@@ -200,7 +224,7 @@ export function FinalPage() {
             return;
         }
 
-        console.log(email);
+        setIsSent(true);
     }
 
     return (
@@ -225,27 +249,52 @@ export function FinalPage() {
                     <br/>
                     в розыгрыше!
                 </TextStyled>
-                <FormWrapper ratio={sizeRatio} onSubmit={handleSubmit}>
-                    <FormControl ratio={sizeRatio}>
-                        <InputStyled
+                <AnimatePresence mode="wait">
+                    {isSent ? (
+                        <SentWrapper
+                            key='sent'
                             ratio={sizeRatio}
-                            placeholder="example@email.com"
-                            value={email}
-                            onChange={setEmail}
-                        />
-                        <IconButtonStyled
+                            initial={{opacity: 0}}
+                            animate={{opacity: 0.5}}
+                            transition={{duration: 0.2, type: 'tween'}}
+                        >
+                            <LeftSentIcon src={Heart} ratio={sizeRatio} />
+                            <SentText size="s" ratio={sizeRatio}>
+                                Почта отправлена
+                            </SentText>
+                            <RightSentIcon src={Heart} ratio={sizeRatio} />
+                        </SentWrapper>
+                    ) : (
+                        <FormWrapper
+                            key='not-sent'
+                            initial={{opacity: 1}}
+                            exit={{opacity: 0}}
+                            transition={{duration: 0.2, type: 'tween'}}
                             ratio={sizeRatio}
-                            icon="next"
-                            type="submit"
-                            disabled={isSendingEmailDisabled}
-                        />
-                    </FormControl>
-                    <FormControl ratio={sizeRatio}>
-                        <CheckboxStyled value={isAgreed} ratio={sizeRatio} onChange={setIsAgreed}>
-                            Я&nbsp;согласен(а) на&nbsp;обработку персональных данных и&nbsp;получение информационных сообщений
-                        </CheckboxStyled>
-                    </FormControl>
-                </FormWrapper>
+                            onSubmit={handleSubmit}
+                        >
+                            <FormControl ratio={sizeRatio}>
+                            <InputStyled
+                                    ratio={sizeRatio}
+                                    placeholder="example@email.com"
+                                    value={email}
+                                    onChange={setEmail}
+                                />
+                                <IconButtonStyled
+                                    ratio={sizeRatio}
+                                    icon="next"
+                                    type="submit"
+                                    disabled={isSendingEmailDisabled}
+                                />
+                            </FormControl>
+                            <FormControl ratio={sizeRatio}>
+                                <CheckboxStyled value={isAgreed} ratio={sizeRatio} onChange={setIsAgreed}>
+                                    Я&nbsp;согласен(а) на&nbsp;обработку персональных данных и&nbsp;получение информационных сообщений
+                                </CheckboxStyled>
+                            </FormControl>
+                        </FormWrapper>
+                    )}
+                </AnimatePresence>
             </TopWrapper>
             <BottomWrapper ratio={sizeRatio}>
                 <CharacterImagesContainerStyled ratio={sizeRatio}>

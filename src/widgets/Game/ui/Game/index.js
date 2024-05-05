@@ -13,6 +13,18 @@ import {LoseModal} from "../LoseModal";
 import {TASKS_BY_LEVEL} from "../../../../entities/Game/constants/tasks";
 import {ProgressBar} from "../../../../entities/Game";
 
+export const LEVEL_TO_PROGRESS_OFFSET = {
+    1: 20.5,
+    2: 44.6,
+    3: 39.5,
+};
+
+export const LEVEL_TO_PROGRESS_WIDTH = {
+    1: 72,
+    2: 61.7,
+    3: 72,
+};
+
 export const CHARACTER_STEP = 2;
 
 const Wrapper = styled(motion.div)`
@@ -50,9 +62,8 @@ const CharacterStyled = styled(Character)`
 const ProgressBarStyled = styled(ProgressBar)`
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(72px * ${({ratio}) => ratio});
+    left: calc(${({level}) => LEVEL_TO_PROGRESS_OFFSET[level]}px * ${({ratio}) => ratio});
+    width: calc(${({level}) => LEVEL_TO_PROGRESS_WIDTH[level]}px * ${({ratio}) => ratio});
 `;
 
 const ControlStyled = styled(Control)`
@@ -321,7 +332,7 @@ export function Game({className, level, onNext, onReset}) {
                 ratio={sizeRatio}
                 style={{x: characterPositionX, y: characterPositionY}}
             >
-                <ProgressBarStyled value={progress} max={maxProgress} ratio={sizeRatio}/>
+                <ProgressBarStyled level={level} value={progress} max={maxProgress} ratio={sizeRatio}/>
             </CharacterStyled>
             <AnimatePresence>
                 {!!controlPosition && (

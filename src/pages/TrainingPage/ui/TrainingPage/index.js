@@ -97,8 +97,8 @@ const CharacterStyled = styled(Character)`
 const ProgressBarStyled = styled(ProgressBar)`
     position: absolute;
     top: calc(-12px * ${({ratio}) => ratio});
-    left: 50%;
-    transform: translate(-50%, -100%);
+    left: calc(42.2px * ${({ratio}) => ratio});;
+    transform: translateY(-100%);
     width: calc(61.7px * ${({ratio}) => ratio});
 `;
 

@@ -38,7 +38,7 @@ const ImagesContainerStyled = styled.div`
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: calc(320px * ${({ratio}) => ratio});
+    width: calc(288px * ${({ratio}) => ratio});
 `;
 
 const Level1Sign1ImageStyled = styled(Image)`

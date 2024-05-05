@@ -49,7 +49,8 @@ export const PAGES_MAP = {
 };
 
 export function App() {
-    const [page, setPage] = useState(PAGE_NAMES.START);
+    const urlParams = new URLSearchParams(window?.location?.search);
+    const [page, setPage] = useState(urlParams.get('page') || PAGE_NAMES.START);
 
     useImagePreloader(IMAGES_TO_PRELOAD_MAP[page]);
 
