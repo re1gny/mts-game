@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import useResizeObserver from "use-resize-observer";
-import {AnimatePresence, motion, useDragControls, useMotionValue, useAnimationFrame, useTransform} from "framer-motion";
+import {AnimatePresence, motion, useWillChange, useDragControls, useMotionValue, useAnimationFrame, useTransform} from "framer-motion";
 import throttle from "lodash/throttle";
 import clamp from "lodash/clamp";
 import styled from "@emotion/styled";
@@ -103,6 +103,7 @@ export function Game({className, level, onNext, onReset}) {
     const controlExistsRef = useRef(false);
     const [controlEvent, setControlEvent] = useState(null);
     const [controlPosition, setControlPosition] = useState(null);
+    const willChange = useWillChange();
     const dragControls = useDragControls();
     const characterPosition = useMotionValue([
         (WIDTH/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2) * sizeRatio,
@@ -322,6 +323,7 @@ export function Game({className, level, onNext, onReset}) {
                             ratio={sizeRatio}
                             exit={{scale: 0.8, opacity: 0}}
                             transition={{duration: 0.1, type: 'tween'}}
+                            style={{willChange}}
                         />
                     ))}
                 </AnimatePresence>
