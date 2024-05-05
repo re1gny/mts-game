@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "./static/js/main.78001ca1.js",
+    "main.js": "./static/js/main.c138a838.js",
     "static/media/level3board.png": "./static/media/level3board.d827a39417ca61a65328.png",
     "static/media/level1board.png": "./static/media/level1board.fe163fdc796d81445f09.png",
     "static/media/level2board.png": "./static/media/level2board.1eacf932b1f2f9aac210.png",
@@ -21,7 +21,7 @@
     "static/media/character2left1.svg": "./static/media/character2left1.3e89d28e3a9b71551b8d9a1106d53b25.svg",
     "static/media/character2left2.svg": "./static/media/character2left2.ae575968e3b0bfb46c0dc63209ac0998.svg",
     "static/media/character2right2.svg": "./static/media/character2right2.196b7e353fd12b5c94fc49bcd4d0f5cd.svg",
-    "static/media/level2character.svg": "./static/media/level2character.ed8debf6e7a6a95b21527c6fe6388b5e.svg",
+    "static/media/level2character.svg": "./static/media/level2character.127bd75b9bd618e5e8475bef8b8f874c.svg",
     "static/media/Group2043683169.png": "./static/media/Group2043683169.12f2253aef37697507e0.png",
     "static/media/Group2043683178.png": "./static/media/Group2043683178.73e276977dc861d4e942.png",
     "static/media/character2center.svg": "./static/media/character2center.0172791a9c6c98607d11b34c8f685548.svg",
@@ -71,6 +71,7 @@
     "static/media/level3task3.svg": "./static/media/level3task3.4a14a6873d51d5f4ca9c5f5093b1ae31.svg",
     "static/media/sign2.svg": "./static/media/sign2.81fbd2634ce8171c95e06aa6ca1d9c9c.svg",
     "static/media/sign1.svg": "./static/media/sign1.ea0e83e190a8a95c800b77bd1b6f90d4.svg",
+    "static/media/heart.svg": "./static/media/heart.0a4e2f343f95f68716847e0b59f5f50b.svg",
     "static/media/sign3.svg": "./static/media/sign3.d2295302b0dbd492558f2b33f8a3152c.svg",
     "static/media/cursor.svg": "./static/media/cursor.6aad0245898cd7b28fb2a9fa9e4a8cef.svg",
     "static/media/level1sign1.svg": "./static/media/level1sign1.e2a5204e05cd6c328d2b91ceef0507a9.svg",
@@ -82,9 +83,9 @@
     "index.html": "./index.html",
     "static/media/sign5.svg": "./static/media/sign5.24f155e5e8da32d8f9dd46037ddd638f.svg",
     "static/media/level3sign.svg": "./static/media/level3sign.f367941c7eccbee5445c035f9a8f40f8.svg",
-    "main.78001ca1.js.map": "./static/js/main.78001ca1.js.map"
+    "main.c138a838.js.map": "./static/js/main.c138a838.js.map"
   },
   "entrypoints": [
-    "static/js/main.78001ca1.js"
+    "static/js/main.c138a838.js"
   ]
 }
