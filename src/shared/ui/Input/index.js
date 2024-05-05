@@ -23,7 +23,7 @@ const Field = styled.input`
 `
 
 export function Input(props) {
-    const {className, value, onChange, ...rest} = props
+    const {className, value, type = 'text', onChange, ...rest} = props
     const sizeRatio = useSizeRatio()
 
     const handleChange = useCallback((event) => {
@@ -31,6 +31,6 @@ export function Input(props) {
     }, [onChange])
 
     return (
-        <Field className={className} ratio={sizeRatio} value={value} type="text" onChange={handleChange} {...rest} />
+        <Field className={className} ratio={sizeRatio} value={value} type={type} onChange={handleChange} {...rest} />
     )
 }

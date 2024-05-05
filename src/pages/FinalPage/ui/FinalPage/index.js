@@ -19,6 +19,7 @@ import { ReactComponent as Character1 } from '../../assets/character1.svg';
 import { ReactComponent as Character2 } from '../../assets/character2.svg';
 import { ReactComponent as Character3 } from '../../assets/character3.svg';
 import { ReactComponent as Heart } from '../../assets/heart.svg';
+import { ReactComponent as ArrowRight } from '../../assets/arrowRight.svg';
 
 const Wrapper = styled(motion.div)`
     position: relative;
@@ -183,6 +184,11 @@ const IconButtonStyled = styled(IconButton)`
     margin-left: calc(4px * ${({ratio}) => ratio});
 `;
 
+const ArrowRightStyled = styled(ArrowRight)`
+    width: calc(28px * ${({ratio}) => ratio});
+    height: calc(26px * ${({ratio}) => ratio});
+`;
+
 const CheckboxStyled = styled(Checkbox)`
     width: 100%;
 `;
@@ -274,18 +280,20 @@ export function FinalPage() {
                             onSubmit={handleSubmit}
                         >
                             <FormControl ratio={sizeRatio}>
-                            <InputStyled
+                                <InputStyled
                                     ratio={sizeRatio}
                                     placeholder="example@email.com"
+                                    type="email"
                                     value={email}
                                     onChange={setEmail}
                                 />
                                 <IconButtonStyled
                                     ratio={sizeRatio}
-                                    icon="next"
                                     type="submit"
                                     disabled={isSendingEmailDisabled}
-                                />
+                                >
+                                    <ArrowRightStyled ratio={sizeRatio} />
+                                </IconButtonStyled>
                             </FormControl>
                             <FormControl ratio={sizeRatio}>
                                 <CheckboxStyled value={isAgreed} ratio={sizeRatio} onChange={setIsAgreed}>
