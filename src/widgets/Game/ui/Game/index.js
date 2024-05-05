@@ -105,16 +105,16 @@ export function Game({className, level, onNext, onReset}) {
     const [controlPosition, setControlPosition] = useState(null);
     const dragControls = useDragControls();
     const characterPosition = useMotionValue([
-        WIDTH/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2,
-        HEIGHT/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2,
+        (WIDTH/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2) * sizeRatio,
+        (HEIGHT/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2) * sizeRatio,
     ]);
     const characterDelta = useTransform(
         characterPosition,
         prev => {
-            const leftDelta = prev[0] - wrapperRect?.width/2 + LEVEL_TO_CHARACTER_SIZE[level][0]/2;
-            const rightDelta = prev[0] + wrapperRect?.width/2 + LEVEL_TO_CHARACTER_SIZE[level][0]/2 - WIDTH;
-            const topDelta = prev[1] - wrapperRect?.height/2 + LEVEL_TO_CHARACTER_SIZE[level][1]/2;
-            const bottomDelta = prev[1] + wrapperRect?.height/2 + LEVEL_TO_CHARACTER_SIZE[level][1]/2 - HEIGHT;
+            const leftDelta = prev[0] - wrapperRect?.width/2 + LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio;
+            const rightDelta = prev[0] + wrapperRect?.width/2 + (LEVEL_TO_CHARACTER_SIZE[level][0]/2 - WIDTH) * sizeRatio;
+            const topDelta = prev[1] - wrapperRect?.height/2 + LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio;
+            const bottomDelta = prev[1] + wrapperRect?.height/2 + (LEVEL_TO_CHARACTER_SIZE[level][1]/2 - HEIGHT) * sizeRatio;
 
             let x;
             let y;
@@ -123,12 +123,12 @@ export function Game({className, level, onNext, onReset}) {
                 x = clamp(
                     rightDelta,
                     0,
-                    wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2,
+                    wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio,
                 );
             } else {
                 x = clamp(
                     leftDelta,
-                    LEVEL_TO_CHARACTER_SIZE[level][0]/2 - wrapperRect?.width/2,
+                    LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio - wrapperRect?.width/2,
                     0,
                 );
             }
@@ -137,12 +137,12 @@ export function Game({className, level, onNext, onReset}) {
                 y = clamp(
                     bottomDelta,
                     0,
-                    wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2,
+                    wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio,
                 );
             } else {
                 y = clamp(
                     topDelta,
-                    LEVEL_TO_CHARACTER_SIZE[level][1]/2 - wrapperRect?.height/2,
+                    LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio - wrapperRect?.height/2,
                     0,
                 );
             }
@@ -152,19 +152,19 @@ export function Game({className, level, onNext, onReset}) {
     );
     const boardPositionX = useTransform(
         [characterPosition, characterDelta],
-        ([prevPosition, prevDelta]) => `${-prevPosition[0] + wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2 + prevDelta[0]}px`,
+        ([prevPosition, prevDelta]) => `${-prevPosition[0] + wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio + prevDelta[0]}px`,
     );
     const boardPositionY = useTransform(
         [characterPosition, characterDelta],
-        ([prevPosition, prevDelta]) => `${-prevPosition[1] + wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2 + prevDelta[1]}px`,
+        ([prevPosition, prevDelta]) => `${-prevPosition[1] + wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio + prevDelta[1]}px`,
     );
     const characterPositionX = useTransform(
         characterDelta,
-        prev => `${wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2 + prev[0]}px`,
+        prev => `${wrapperRect?.width/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio + prev[0]}px`,
     );
     const characterPositionY = useTransform(
         characterDelta,
-        prev => `${wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2 + prev[1]}px`,
+        prev => `${wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio + prev[1]}px`,
     );
     const maxProgress = TASKS_BY_LEVEL[level].filter(({allowed}) => allowed).length;
 
@@ -179,9 +179,9 @@ export function Game({className, level, onNext, onReset}) {
             const topRatio = clamp(y, -30, 30) / 30
             const leftRatio = clamp(x, -30, 30) / 30
 
-            setDirection([leftRatio * CHARACTER_STEP, topRatio * CHARACTER_STEP]);
+            setDirection([leftRatio * CHARACTER_STEP * sizeRatio, topRatio * CHARACTER_STEP * sizeRatio]);
         }, 50),
-        [],
+        [sizeRatio],
     );
 
     const handleMove = useCallback(
@@ -194,15 +194,15 @@ export function Game({className, level, onNext, onReset}) {
 
             const collidedTask = tasks.find(({size, position}) => {
                 const circle = {
-                    x: position[0] + size/2,
-                    y: position[1] + size/2,
-                    r: size/2,
+                    x: (position[0] + size/2) * sizeRatio,
+                    y: (position[1] + size/2) * sizeRatio,
+                    r: size/2 * sizeRatio,
                 };
                 const ellipse = {
-                    x: x + LEVEL_TO_CHARACTER_SIZE[level][0]/2,
-                    y: y + LEVEL_TO_CHARACTER_SIZE[level][1]/2 + 20,
-                    rx: LEVEL_TO_CHARACTER_SIZE[level][0]/2,
-                    ry: LEVEL_TO_CHARACTER_SIZE[level][1]/2,
+                    x: x + LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio,
+                    y: y + (LEVEL_TO_CHARACTER_SIZE[level][1]/2 + 20) * sizeRatio,
+                    rx: LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio,
+                    ry: LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio,
                 };
 
                 return checkIsColliding(circle, ellipse);
@@ -213,7 +213,7 @@ export function Game({className, level, onNext, onReset}) {
                 setTasks(prev => prev.filter(task => task.id !== collidedTask.id))
             }
         }, 50),
-        []
+        [sizeRatio]
     );
 
     const handleTapStart = (event) => {
@@ -288,12 +288,12 @@ export function Game({className, level, onNext, onReset}) {
         const nextX = clamp(
             prevX + direction[0],
             0,
-            WIDTH - LEVEL_TO_CHARACTER_SIZE[level][0],
+            (WIDTH - LEVEL_TO_CHARACTER_SIZE[level][0]) * sizeRatio,
         );
         const nextY = clamp(
             prevY + direction[1],
             0,
-            HEIGHT - LEVEL_TO_CHARACTER_SIZE[level][1] - 20,
+            (HEIGHT - LEVEL_TO_CHARACTER_SIZE[level][1] - 20) * sizeRatio,
         );
 
         characterPosition.set([nextX, nextY]);
