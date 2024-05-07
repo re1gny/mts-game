@@ -10,6 +10,8 @@ import {FinalPage} from "../../../pages/FinalPage";
 import {useImagePreloader} from "../../../shared/hooks/useImagePreloader";
 import {useState} from "react";
 import {IMAGES_TO_PRELOAD_MAP} from "../../constants/imagesToPreload";
+import MTSWideBold from "../../fonts/MTSWide-Bold.otf";
+import MTSWideMedium from "../../fonts/MTSWide-Medium.otf";
 
 const GLOBAL_STYLES = {
     html: {
@@ -17,7 +19,6 @@ const GLOBAL_STYLES = {
     },
     body: {
         height: '100%',
-        fontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif`,
         '-webkit-font-smoothing': 'antialiased',
         '-moz-osx-font-smoothing': 'grayscale',
         backgroundColor: '#EBE9EF',
@@ -30,8 +31,28 @@ const GLOBAL_STYLES = {
         'box-sizing': 'border-box',
         'padding': 0,
         'margin': 0,
+        fontFamily: `MTSWide, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif`,
     },
 }
+
+const FONT_STYLES = [
+    {
+        "@font-face": {
+            fontFamily: 'MTSWide',
+            src: `local('MTS Wide'), local('MTSWide'), url(${MTSWideBold}) format('opentype')`,
+            fontWeight: 700,
+            fontStyle: 'normal',
+        }
+    },
+    {
+        "@font-face": {
+            fontFamily: 'MTSWide',
+            src: `local('MTS Wide'), local('MTSWide'), url(${MTSWideMedium}) format('opentype')`,
+            fontWeight: 500,
+            fontStyle: 'normal',
+        }
+    },
+];
 
 export const PAGES_MAP = {
     [PAGE_NAMES.START]: () => <StartPage/>,
@@ -56,7 +77,7 @@ export function App() {
 
     return (
         <ScreenTemplate>
-            <Global styles={GLOBAL_STYLES} />
+            <Global styles={[GLOBAL_STYLES, ...FONT_STYLES]} />
             <Router page={page} pagesComponents={PAGES_MAP} onPageChange={setPage} />
         </ScreenTemplate>
     )

@@ -26,7 +26,11 @@ export const LEVEL_TO_PROGRESS_WIDTH = {
 };
 
 export const CHARACTER_STEP = 2;
-export const TASK_STEP = 1;
+export const TASK_STEP_BY_LEVEL = {
+    1: 1,
+    2: 1,
+    3: 2,
+};
 
 const Wrapper = styled(motion.div)`
     position: relative;
@@ -90,7 +94,10 @@ export function Game({className, level, onNext, onReset}) {
     const [direction, setDirection] = useState([0, 0]);
     const tasksDirection = useMotionValue(TASKS_BY_LEVEL[level].reduce((acc, task) => ({
         ...acc,
-        [task.id]: [random(-TASK_STEP, TASK_STEP, true), random(-TASK_STEP, TASK_STEP, true)],
+        [task.id]: [
+            random(-TASK_STEP_BY_LEVEL[level], TASK_STEP_BY_LEVEL[level], true),
+            random(-TASK_STEP_BY_LEVEL[level], TASK_STEP_BY_LEVEL[level], true),
+        ],
     }), {}));
     const collidedTaskRef = useRef(null);
     const controlExistsRef = useRef(false);

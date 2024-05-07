@@ -193,6 +193,11 @@ const CheckboxStyled = styled(Checkbox)`
     width: 100%;
 `;
 
+const CheckboxLinkStyled = styled.a`
+    color: inherit;
+    text-decoration: underline;
+`
+
 const BottomWrapper = styled.div`
     position: relative;
     display: flex;
@@ -299,7 +304,7 @@ export function FinalPage() {
                             </FormControl>
                             <FormControl ratio={sizeRatio}>
                                 <CheckboxStyled value={isAgreed} ratio={sizeRatio} onChange={setIsAgreed}>
-                                    Я&nbsp;согласен(а) на&nbsp;обработку персональных данных и&nbsp;получение информационных сообщений
+                                    Я&nbsp;согласен(а) на&nbsp;<CheckboxLinkStyled href="https://fut.ru/personal_data_policy/" target="_blank">обработку персональных данных</CheckboxLinkStyled> и&nbsp;получение информационных сообщений
                                 </CheckboxStyled>
                             </FormControl>
                         </FormWrapper>
