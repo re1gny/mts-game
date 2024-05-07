@@ -1,9 +1,11 @@
 {
   "files": {
-    "main.js": "./static/js/main.c246ffba.js",
+    "main.js": "./static/js/main.ab5767f2.js",
     "static/media/level3board.png": "./static/media/level3board.47fd7cc4fcb3a1b7833c.png",
     "static/media/level1board.png": "./static/media/level1board.c822680a71b69eccdd67.png",
     "static/media/level2board.png": "./static/media/level2board.608e69a8a370a5d6e057.png",
+    "static/media/MTSWide-Medium.otf": "./static/media/MTSWide-Medium.82e217d65262ce59f53a.otf",
+    "static/media/MTSWide-Bold.otf": "./static/media/MTSWide-Bold.0337f265ac0c0da22b0a.otf",
     "static/media/Group2043683176.png": "./static/media/Group2043683176.c0f185289bbf4749ad3c.png",
     "static/media/Group2043683177.png": "./static/media/Group2043683177.5e799aad56b7744bdd87.png",
     "static/media/Group2043683170.png": "./static/media/Group2043683170.78552111977fb306ad30.png",
@@ -84,9 +86,9 @@
     "static/media/arrowRight.svg": "./static/media/arrowRight.482882ddb277ec1e50a923245d4a715c.svg",
     "static/media/sign5.svg": "./static/media/sign5.24f155e5e8da32d8f9dd46037ddd638f.svg",
     "static/media/level3sign.svg": "./static/media/level3sign.f367941c7eccbee5445c035f9a8f40f8.svg",
-    "main.c246ffba.js.map": "./static/js/main.c246ffba.js.map"
+    "main.ab5767f2.js.map": "./static/js/main.ab5767f2.js.map"
   },
   "entrypoints": [
-    "static/js/main.c246ffba.js"
+    "static/js/main.ab5767f2.js"
   ]
 }
