@@ -7,7 +7,7 @@ import {Text} from "../../../../shared/ui/Text";
 import {useSizeRatio} from "../../../../shared/hooks/useSizeRatio";
 import {useRouter} from "../../../../entities/Router";
 import {Control, ProgressBar} from "../../../../entities/Game";
-import {Character} from "../../../../entities/Character";
+import {Character, LEVEL_TO_CHARACTER_SIZE} from "../../../../entities/Character";
 import {Image} from "../../../../shared/ui/Image";
 import { ReactComponent as Background } from '../../assets/background.svg';
 import { ReactComponent as Sign1 } from '../../assets/sign1.svg';
@@ -90,8 +90,16 @@ const CursorStyled = styled(Image)`
     height: calc(54px * ${({ratio}) => ratio});
 `;
 
-const CharacterStyled = styled(Character)`
+const CharacterWrapperStyled = styled.div`
+    position: relative;
     margin-top: calc(80.9px * ${({ratio}) => ratio});
+    width: 100%;
+    height: calc(${({level}) => LEVEL_TO_CHARACTER_SIZE[level][1]}px * ${({ratio}) => ratio});
+`;
+
+const CharacterStyled = styled(Character)`
+    position: absolute;
+    bottom: 0;
 `;
 
 const ProgressBarStyled = styled(ProgressBar)`
@@ -101,6 +109,8 @@ const ProgressBarStyled = styled(ProgressBar)`
     transform: translateY(-100%);
     width: calc(61.7px * ${({ratio}) => ratio});
 `;
+
+const DELTA = 24;
 
 export function TrainingPage() {
     const sizeRatio = useSizeRatio();
@@ -154,7 +164,7 @@ export function TrainingPage() {
                             dragListener: false,
                             drag: "x",
                             style: {x: stickX},
-                            animate: {x: [`${-24 * sizeRatio}px`, `${24 * sizeRatio}px`]},
+                            animate: {x: [`${-DELTA * sizeRatio}px`, `${DELTA * sizeRatio}px`]},
                             transition: {
                                 duration: 0.6,
                                 repeat: Infinity,
@@ -168,16 +178,26 @@ export function TrainingPage() {
                         src={Cursor}
                         ratio={sizeRatio}
                         style={{x: stickX}}
-                        transition={{duration: 0.4}}
+                        transition={{duration: 0.6}}
                     />
                 </ControlWrapperStyled>
-                <CharacterStyled
+                <CharacterWrapperStyled
                     level={3}
-                    direction={direction}
                     ratio={sizeRatio}
                 >
-                    <ProgressBarStyled value={33} max={100} ratio={sizeRatio} />
-                </CharacterStyled>
+                    <CharacterStyled
+                        level={3}
+                        direction={direction}
+                        ratio={sizeRatio}
+                        animate={{
+                            x: direction > 0 ? '-100%' : direction < 0 ? '0' : '-50%',
+                            left: direction > 0 ? '100%' : direction < 0 ? '0' : '50%',
+                        }}
+                        transition={{type: 'tween', duration: 1.2, ease: 'linear'}}
+                    >
+                        <ProgressBarStyled value={33} max={100} ratio={sizeRatio} />
+                    </CharacterStyled>
+                </CharacterWrapperStyled>
             </PanelStyled>
             <ButtonStyled ratio={sizeRatio} onClick={next}>
                 Понятно

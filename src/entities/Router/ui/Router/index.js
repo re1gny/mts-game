@@ -1,6 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import {RouterContext} from "../../store/routerContext";
-import {NEXT_PAGES, PAGE_NAMES} from "../../constants/pages";
+import {NEXT_PAGES, RESET_PAGES_BY_LEVEL} from "../../constants/pages";
 
 export function Router({page, pagesComponents, onPageChange}) {
     const Component = pagesComponents?.[page] || (() => null);
@@ -11,8 +11,8 @@ export function Router({page, pagesComponents, onPageChange}) {
         }
     }
 
-    const reset = () => {
-        onPageChange(PAGE_NAMES.LEVEL_1_INTRO);
+    const reset = (level) => {
+        onPageChange(RESET_PAGES_BY_LEVEL[level]);
     }
 
     return (

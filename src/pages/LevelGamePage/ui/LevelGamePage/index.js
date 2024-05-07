@@ -24,7 +24,7 @@ export function LevelGamePage({level}) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
         >
-            <Game level={level} onNext={next} onReset={reset} />
+            <Game level={level} onNext={next} onReset={() => reset(level)} />
         </Wrapper>
     );
 }

@@ -223,6 +223,10 @@ export function FinalPage() {
 
     const isSendingEmailDisabled = !email.length || !/\S+@\S+\.\S+/.test(email) || !isAgreed;
 
+    const handleInternship = () => {
+        window.open('https://rabota.mtsbank.ru/st', '_blank');
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -313,7 +317,7 @@ export function FinalPage() {
                         Чтобы повторить карьерный путь не&nbsp;в&nbsp;игре, а&nbsp;в&nbsp;жизни, оставляй заявку на&nbsp;стажировку в&nbsp;МТС&nbsp;Финтех!
                     </TextStyled>
                 </PanelStyled>
-                <ButtonStyled ratio={sizeRatio}>
+                <ButtonStyled ratio={sizeRatio} onClick={handleInternship}>
                     К стажировке!
                 </ButtonStyled>
             </BottomWrapper>

@@ -6,7 +6,7 @@ import {useAnimate} from "../../hooks/useAnimate";
 import {Image} from "../../../../shared/ui/Image";
 
 export const LEVEL_TO_CHARACTER_SIZE = {
-    1: [118, 125],
+    1: [117, 121],
     2: [124, 123],
     3: [133, 121],
 };
