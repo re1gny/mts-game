@@ -1,12 +1,12 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import useResizeObserver from "use-resize-observer";
-import {AnimatePresence, motion, useWillChange, useDragControls, useMotionValue, useAnimationFrame, useTransform} from "framer-motion";
+import {AnimatePresence, motion, useDragControls, useMotionValue, useAnimationFrame, useTransform} from "framer-motion";
 import throttle from "lodash/throttle";
+import random from "lodash/random";
 import clamp from "lodash/clamp";
 import styled from "@emotion/styled";
 import {useSizeRatio} from "../../../../shared/hooks/useSizeRatio";
-import {Image} from "../../../../shared/ui/Image";
-import {Board, PauseButton, Live, Control, MAX_LIVES, WIDTH, HEIGHT} from "../../../../entities/Game";
+import {Board, PauseButton, Live, Task, Control, MAX_LIVES, WIDTH, HEIGHT} from "../../../../entities/Game";
 import {Character, LEVEL_TO_CHARACTER_SIZE} from "../../../../entities/Character";
 import {PauseModal} from "../PauseModal";
 import {LoseModal} from "../LoseModal";
@@ -26,6 +26,7 @@ export const LEVEL_TO_PROGRESS_WIDTH = {
 };
 
 export const CHARACTER_STEP = 2;
+export const TASK_STEP = 1;
 
 const Wrapper = styled(motion.div)`
     position: relative;
@@ -77,18 +78,6 @@ const BoardStyled = styled(Board)`
     height: 100%;
 `;
 
-const ImageStyled = styled(Image)`
-    position: absolute;
-    top: calc(${({position}) => position[1]}px * ${({ratio}) => ratio});
-    left: calc(${({position}) => position[0]}px * ${({ratio}) => ratio});
-    width: calc(${({size}) => size}px * ${({ratio}) => ratio});
-    height: calc(${({size}) => size}px * ${({ratio}) => ratio});
-`;
-
-const checkIsColliding = (circle, ellipse) => {
-    return Math.hypot(circle.x - ellipse.x, circle.y - ellipse.y) <= circle.r + Math.max(ellipse.rx, ellipse.ry);
-};
-
 export function Game({className, level, onNext, onReset}) {
     const sizeRatio = useSizeRatio();
     const wrapperRef = useRef();
@@ -99,16 +88,23 @@ export function Game({className, level, onNext, onReset}) {
     const [livesLeft, setLivesLeft] = useState(MAX_LIVES);
     const [tasks, setTasks] = useState(TASKS_BY_LEVEL[level]);
     const [direction, setDirection] = useState([0, 0]);
+    const tasksDirection = useMotionValue(TASKS_BY_LEVEL[level].reduce((acc, task) => ({
+        ...acc,
+        [task.id]: [random(-TASK_STEP, TASK_STEP, true), random(-TASK_STEP, TASK_STEP, true)],
+    }), {}));
     const collidedTaskRef = useRef(null);
     const controlExistsRef = useRef(false);
     const [controlEvent, setControlEvent] = useState(null);
     const [controlPosition, setControlPosition] = useState(null);
-    const willChange = useWillChange();
     const dragControls = useDragControls();
     const characterPosition = useMotionValue([
         (WIDTH/2 - LEVEL_TO_CHARACTER_SIZE[level][0]/2) * sizeRatio,
         (HEIGHT/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2) * sizeRatio,
     ]);
+    const tasksPosition = useMotionValue(TASKS_BY_LEVEL[level].reduce((acc, task) => ({
+        ...acc,
+        [task.id]: [task.position[0] * sizeRatio, task.position[1] * sizeRatio],
+    }), {}));
     const characterDelta = useTransform(
         characterPosition,
         prev => {
@@ -185,38 +181,6 @@ export function Game({className, level, onNext, onReset}) {
         [sizeRatio],
     );
 
-    const handleMove = useCallback(
-        throttle((tasks) => {
-            if (collidedTaskRef.current) {
-                return;
-            }
-
-            const [x, y] = characterPosition.get();
-
-            const collidedTask = tasks.find(({size, position}) => {
-                const circle = {
-                    x: (position[0] + size/2) * sizeRatio,
-                    y: (position[1] + size/2) * sizeRatio,
-                    r: size/2 * sizeRatio,
-                };
-                const ellipse = {
-                    x: x + LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio,
-                    y: y + (LEVEL_TO_CHARACTER_SIZE[level][1]/2 + 20) * sizeRatio,
-                    rx: LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio,
-                    ry: LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio,
-                };
-
-                return checkIsColliding(circle, ellipse);
-            });
-
-            if (collidedTask) {
-                collidedTaskRef.current = collidedTask;
-                setTasks(prev => prev.filter(task => task.id !== collidedTask.id))
-            }
-        }, 50),
-        [sizeRatio]
-    );
-
     const handleTapStart = (event) => {
         if (controlExistsRef.current) {
             return;
@@ -264,8 +228,6 @@ export function Game({className, level, onNext, onReset}) {
             setLivesLeft(prev => prev - 1);
             collidedTaskRef.current = null;
         }
-
-        return characterPosition.on('change', () => handleMove(tasks))
     }, [tasks]);
 
     useEffect(() => {
@@ -281,23 +243,89 @@ export function Game({className, level, onNext, onReset}) {
     }, [livesLeft]);
 
     useAnimationFrame(() => {
-        if (!controlExistsRef.current) {
+        if (isPaused || isLost) {
             return;
         }
 
+        const prevTasksDirection = tasksDirection.get();
+        const prevTasksPosition = tasksPosition.get();
         const [prevX, prevY] = characterPosition.get();
+
         const nextX = clamp(
             prevX + direction[0],
             0,
             (WIDTH - LEVEL_TO_CHARACTER_SIZE[level][0]) * sizeRatio,
         );
+
         const nextY = clamp(
             prevY + direction[1],
             0,
             (HEIGHT - LEVEL_TO_CHARACTER_SIZE[level][1] - 20) * sizeRatio,
         );
 
+        const nextTasksDirection = tasks.reduce((acc, task) => {
+            const prevPosition = prevTasksPosition[task.id];
+            const prevDirection = prevTasksDirection[task.id];
+
+            if (prevPosition[0] <= 0 || prevPosition[0] + task.size * sizeRatio >= WIDTH * sizeRatio) {
+                return {
+                    ...prevTasksDirection,
+                    ...acc,
+                    [task.id]: [-prevDirection[0], prevDirection[1]],
+                };
+            }
+
+            if (prevPosition[1] <= 0 || prevPosition[1] + task.size * sizeRatio >= HEIGHT * sizeRatio) {
+                return {
+                    ...prevTasksDirection,
+                    ...acc,
+                    [task.id]: [prevDirection[0], -prevDirection[1]],
+                };
+            }
+
+            return {
+                ...acc,
+                [task.id]: prevDirection,
+            };
+        }, {});
+
+        const nextTasksPosition = tasks.reduce((acc, task) => {
+            return {
+                ...prevTasksPosition,
+                ...acc,
+                [task.id]: [
+                    prevTasksPosition[task.id][0] + nextTasksDirection[task.id][0],
+                    prevTasksPosition[task.id][1] + nextTasksDirection[task.id][1],
+                ],
+            };
+        }, {});
+
         characterPosition.set([nextX, nextY]);
+        tasksPosition.set(nextTasksPosition);
+        tasksDirection.set(nextTasksDirection);
+
+        if (!collidedTaskRef.current) {
+            const collidedTask = tasks.find(({size, id}) => {
+                const taskData = {
+                    x: nextTasksPosition[id][0] + size/2 * sizeRatio,
+                    y: nextTasksPosition[id][1] + size/2 * sizeRatio,
+                    r: size/2 * sizeRatio,
+                };
+                const characterData = {
+                    x: nextX + LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio,
+                    y: nextY + (LEVEL_TO_CHARACTER_SIZE[level][1]/2 + 20) * sizeRatio,
+                    rx: LEVEL_TO_CHARACTER_SIZE[level][0]/2 * sizeRatio,
+                    ry: LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio,
+                };
+
+                return Math.hypot(taskData.x - characterData.x, taskData.y - characterData.y) <= taskData.r + Math.max(characterData.rx, characterData.ry);
+            });
+
+            if (collidedTask) {
+                collidedTaskRef.current = collidedTask;
+                setTasks(prev => prev.filter(task => task.id !== collidedTask.id))
+            }
+        }
     });
 
     return (
@@ -314,16 +342,11 @@ export function Game({className, level, onNext, onReset}) {
                 imageProps={{style: {x: boardPositionX, y: boardPositionY}}}
             >
                 <AnimatePresence>
-                    {tasks.map(({id, size, position, image}) => (
-                        <ImageStyled
-                            key={id}
-                            src={image}
-                            position={position}
-                            size={size}
-                            ratio={sizeRatio}
-                            exit={{scale: 0.8, opacity: 0}}
-                            transition={{type: "spring", velocity: 4}}
-                            style={{willChange}}
+                    {tasks.map((task) => (
+                        <Task
+                            key={task.id}
+                            task={task}
+                            tasksPosition={tasksPosition}
                         />
                     ))}
                 </AnimatePresence>
