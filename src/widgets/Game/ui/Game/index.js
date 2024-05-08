@@ -35,6 +35,7 @@ const Wrapper = styled(motion.div)`
     position: relative;
     width: 100%;
     height: 100%;
+    touch-action: none;
 `;
 
 const LivesStyled = styled.div`
