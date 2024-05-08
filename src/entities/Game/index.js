@@ -1,4 +1,6 @@
 export * from './constants/lives.js';
+export * from './constants/tasks.js';
+export * from './constants/progress.js';
 export * from './ui/Live';
 export * from './ui/PauseButton';
 export * from './ui/Board';

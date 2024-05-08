@@ -6,11 +6,10 @@ import random from "lodash/random";
 import clamp from "lodash/clamp";
 import styled from "@emotion/styled";
 import {useSizeRatio} from "../../../../shared/hooks/useSizeRatio";
-import {Board, PauseButton, Live, Task, Control, MAX_LIVES, WIDTH, HEIGHT} from "../../../../entities/Game";
+import {Board, PauseButton, Live, Task, Control, MAX_LIVES, TASKS_BY_LEVEL, MAX_PROGRESS_BY_LEVEL, WIDTH, HEIGHT} from "../../../../entities/Game";
 import {Character, LEVEL_TO_CHARACTER_SIZE} from "../../../../entities/Character";
 import {PauseModal} from "../PauseModal";
 import {LoseModal} from "../LoseModal";
-import {TASKS_BY_LEVEL} from "../../../../entities/Game/constants/tasks";
 import {ProgressBar} from "../../../../entities/Game";
 
 export const LEVEL_TO_PROGRESS_OFFSET = {
@@ -170,7 +169,7 @@ export function Game({className, level, onNext, onReset}) {
         characterDelta,
         prev => `${wrapperRect?.height/2 - LEVEL_TO_CHARACTER_SIZE[level][1]/2 * sizeRatio + prev[1]}px`,
     );
-    const maxProgress = TASKS_BY_LEVEL[level].filter(({allowed}) => allowed).length;
+    const maxProgress = MAX_PROGRESS_BY_LEVEL[level];
 
     const handleDrag = useCallback(
         throttle((event, info) => {
