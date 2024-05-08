@@ -16,6 +16,7 @@ import MTSWideMedium from "../../fonts/MTSWide-Medium.otf";
 const GLOBAL_STYLES = {
     html: {
         height: '100%',
+        overflow: 'hidden',
     },
     body: {
         height: '100%',
@@ -26,6 +27,7 @@ const GLOBAL_STYLES = {
     },
     '#root': {
         height: '100%',
+        overflow: 'hidden',
     },
     '*': {
         'box-sizing': 'border-box',
