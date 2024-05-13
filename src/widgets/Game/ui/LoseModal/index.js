@@ -43,9 +43,13 @@ export function LoseModal({className, opened, onReset}) {
         <Wrapper className={className} opened={opened} ratio={sizeRatio}>
             <PanelStyled ratio={sizeRatio}>
                 <TextStyled size="s" ratio={sizeRatio}>
-                    Удача была совсем близко, попробуешь ещё&nbsp;разок?
+                    Тебе попалось слишком
                     <br/>
-                    Начни с&nbsp;заданий поменьше и&nbsp;расти постепенно.
+                    много больших задач...
+                    <br/>
+                    Попробуй пройти
+                    <br/>
+                    уровень снова
                 </TextStyled>
                 <ImageStyled src={Lose} ratio={sizeRatio} />
             </PanelStyled>

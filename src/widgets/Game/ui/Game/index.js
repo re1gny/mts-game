@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
+import {useCallback, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
 import useResizeObserver from "use-resize-observer";
 import {AnimatePresence, motion, useDragControls, useMotionValue, useAnimationFrame, useTransform} from "framer-motion";
 import throttle from "lodash/throttle";
@@ -6,10 +6,23 @@ import random from "lodash/random";
 import clamp from "lodash/clamp";
 import styled from "@emotion/styled";
 import {useSizeRatio} from "../../../../shared/hooks/useSizeRatio";
-import {Board, PauseButton, Live, Task, Control, MAX_LIVES, TASKS_BY_LEVEL, MAX_PROGRESS_BY_LEVEL, WIDTH, HEIGHT} from "../../../../entities/Game";
+import {
+    Board,
+    PauseButton,
+    Live,
+    Task,
+    Control,
+    MAX_LIVES,
+    TASKS_BY_LEVEL,
+    MAX_PROGRESS_BY_LEVEL,
+    WIDTH,
+    HEIGHT,
+    GameContext
+} from "../../../../entities/Game";
 import {Character, LEVEL_TO_CHARACTER_SIZE} from "../../../../entities/Character";
 import {PauseModal} from "../PauseModal";
 import {LoseModal} from "../LoseModal";
+import {MultipleLoseModal} from "../MultipleLoseModal";
 import {ProgressBar} from "../../../../entities/Game";
 
 export const LEVEL_TO_PROGRESS_OFFSET = {
@@ -43,6 +56,8 @@ const LivesStyled = styled.div`
     top: calc(36.8px * ${({ratio}) => ratio});
     left: calc(27.5px * ${({ratio}) => ratio});
     display: flex;
+    align-items: center;
+    justify-content: flex-start;
 `;
 
 const LiveStyled = styled(Live)`
@@ -84,6 +99,7 @@ const BoardStyled = styled(Board)`
 
 export function Game({className, level, onNext, onReset}) {
     const sizeRatio = useSizeRatio();
+    const {loseCount, setLoseCount} = useContext(GameContext);
     const wrapperRef = useRef();
     const [wrapperRect, setWrapperRect] = useState(null);
     const [isPaused, setIsPaused] = useState(false);
@@ -246,6 +262,7 @@ export function Game({className, level, onNext, onReset}) {
     useEffect(() => {
         if (livesLeft === 0) {
             setIsLost(true);
+            setLoseCount?.(prev => prev + 1);
         }
     }, [livesLeft]);
 
@@ -401,7 +418,8 @@ export function Game({className, level, onNext, onReset}) {
                 opened={isPaused}
                 onResume={() => setIsPaused(false)}
             />
-            <LoseModal opened={isLost} onReset={onReset}/>
+            <LoseModal opened={loseCount <= 1 && isLost} onReset={onReset}/>
+            <MultipleLoseModal opened={loseCount > 1 && isLost} onReset={onReset}/>
         </Wrapper>
     );
 }

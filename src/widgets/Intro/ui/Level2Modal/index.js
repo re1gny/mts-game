@@ -116,7 +116,11 @@ export function Level2Modal({className, opened, initial, onNext}) {
                     <TextStyled size="xs" ratio={sizeRatio}>
                         Ого, крутой прогресс!
                         <br/>
-                        Теперь ты клиентский менеджер, а&nbsp;вот твои новые&nbsp;задачи:
+                        Теперь ты клиентский
+                        <br/>
+                        менеджер, а&nbsp;вот твои
+                        <br/>
+                        новые&nbsp;задачи:
                     </TextStyled>
                     <TasksListStyled ratio={sizeRatio}>
                         {LEVEL_2_TASKS.map(({ image, name }, index) => (

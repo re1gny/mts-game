@@ -31,11 +31,10 @@ const TagStyled = styled(Panel)`
 
 const TasksTitleStyled = styled(Text)`
     text-align: center;
-    margin-top: calc(14px * ${({ratio}) => ratio});
+    margin: calc(14px * ${({ratio}) => ratio}) calc(-22px * ${({ratio}) => ratio}) 0;
 `;
 
 const TasksListStyled = styled.div`
-    width: 100%;
     margin-top: calc(14px * ${({ratio}) => ratio});
 `;
 
@@ -83,7 +82,11 @@ export function PauseModal({className, level, opened, onResume}) {
                 </TasksListStyled>
             </PanelStyled>
             <RulesTextStyled size="s" ratio={sizeRatio}>
-                У&nbsp;тебя есть 3&nbsp;жизни&nbsp;— избегай задач больше тебя по&nbsp;размеру.
+                У&nbsp;тебя есть 3&nbsp;жизни&nbsp;—
+                <br/>
+                избегай задач больше
+                <br/>
+                тебя по&nbsp;размеру.
             </RulesTextStyled>
             <ButtonStyled ratio={sizeRatio} onClick={onResume}>
                 Продолжить

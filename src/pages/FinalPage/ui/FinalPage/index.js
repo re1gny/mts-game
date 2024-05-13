@@ -304,7 +304,9 @@ export function FinalPage() {
                             </FormControl>
                             <FormControl ratio={sizeRatio}>
                                 <CheckboxStyled value={isAgreed} ratio={sizeRatio} onChange={setIsAgreed}>
-                                    Я&nbsp;согласен(а) на&nbsp;<CheckboxLinkStyled href="https://fut.ru/personal_data_policy/" target="_blank">обработку персональных данных</CheckboxLinkStyled> и&nbsp;получение информационных сообщений
+                                    Я&nbsp;согласен(а) на&nbsp;<CheckboxLinkStyled href="https://fut.ru/personal_data_policy/" target="_blank">обработку персональных данных</CheckboxLinkStyled>
+                                    <br/>
+                                    и&nbsp;получение информационных сообщений
                                 </CheckboxStyled>
                             </FormControl>
                         </FormWrapper>
@@ -319,7 +321,13 @@ export function FinalPage() {
                 </CharacterImagesContainerStyled>
                 <PanelStyled ratio={sizeRatio}>
                     <TextStyled ratio={sizeRatio} size="s">
-                        Чтобы повторить карьерный путь не&nbsp;в&nbsp;игре, а&nbsp;в&nbsp;жизни, оставляй заявку на&nbsp;стажировку в&nbsp;МТС&nbsp;Финтех!
+                        Чтобы повторить карьерный
+                        <br/>
+                        путь не&nbsp;в&nbsp;игре, а&nbsp;в&nbsp;жизни,
+                        <br/>
+                        оставляй заявку на
+                        <br/>
+                        стажировку в&nbsp;МТС&nbsp;Финтех!
                     </TextStyled>
                 </PanelStyled>
                 <ButtonStyled ratio={sizeRatio} onClick={handleInternship}>

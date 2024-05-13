@@ -10,45 +10,45 @@ import { ReactComponent as Level3task3 } from '../assets/level3task3.svg';
 
 export const LEVEL_1_TASKS = [
     {
-        name: 'Выдавать верные талончики',
+        name: 'Выдавать верные\nталончики',
         image: Level1task1,
     },
     {
-        name: 'Помогать клиентам',
+        name: 'Помогать\nклиентам',
         image: Level1task2,
     },
     {
-        name: 'Узнать про продукты\xA0МТС',
+        name: 'Узнать про\nпродукты\xA0МТС',
         image: Level1task3,
     },
 ];
 
 export const LEVEL_2_TASKS = [
     {
-        name: 'Заключать сделки',
+        name: 'Заключать\nсделки',
         image: Level2task1,
     },
     {
-        name: 'Обрабатывать обращения',
+        name: 'Обрабатывать\nобращения',
         image: Level2task2,
     },
     {
-        name: 'Составлять отчёты',
+        name: 'Составлять\nотчёты',
         image: Level2task3,
     },
 ];
 
 export const LEVEL_3_TASKS = [
     {
-        name: 'Находить сотрудников',
+        name: 'Находить\nсотрудников',
         image: Level3task1,
     },
     {
-        name: 'Следить за\xA0качеством услуг',
+        name: 'Следить за\nкачеством услуг',
         image: Level3task2,
     },
     {
-        name: 'Контролировать выполнение плана',
+        name: 'Контролировать\nвыполнение плана',
         image: Level3task3,
     },
 ];

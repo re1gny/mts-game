@@ -102,9 +102,15 @@ export function Level3Modal({className, opened, initial, onNext}) {
                 </ImagesContainerStyled>
                 <PanelStyled ratio={sizeRatio}>
                     <TextStyled size="xs" ratio={sizeRatio}>
-                        Вот это упорство!
+                        Вау!
                         <br/>
-                        Пришло время стать руководителем отделения банка и&nbsp;взять на&nbsp;себя самые ответственные задачи.
+                        Теперь ты — руководитель
+                        <br/>
+                        отделения банка, и&nbsp;можешь
+                        <br/>
+                        ловить все задачи, даже
+                        <br/>
+                        самые ответственные:
                     </TextStyled>
                     <TasksListStyled ratio={sizeRatio}>
                         {LEVEL_3_TASKS.map(({ image, name }, index) => (

@@ -151,7 +151,9 @@ export function StartPage() {
             <Sign5ImageStyled src={Sign5} ratio={sizeRatio} />
             <TextWrapper ratio={sizeRatio}>
                 <TextStyled ratio={sizeRatio} size="m">
-                    Ищешь классную работу, но&nbsp;у&nbsp;тебя&nbsp;нет&nbsp;опыта?
+                    Ищешь классную работу,
+                    <br/>
+                    но&nbsp;у&nbsp;тебя&nbsp;нет&nbsp;опыта?
                     <br/>
                     Приходи в&nbsp;МТС&nbsp;Финтех!
                 </TextStyled>
