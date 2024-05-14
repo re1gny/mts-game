@@ -418,8 +418,8 @@ export function Game({className, level, onNext, onReset}) {
                 opened={isPaused}
                 onResume={() => setIsPaused(false)}
             />
-            <LoseModal opened={loseCount <= 1 && isLost} onReset={onReset}/>
-            <MultipleLoseModal opened={loseCount > 1 && isLost} onReset={onReset}/>
+            <LoseModal opened={loseCount % 2 && isLost} onReset={onReset}/>
+            <MultipleLoseModal opened={!(loseCount % 2) && isLost} onReset={onReset}/>
         </Wrapper>
     );
 }

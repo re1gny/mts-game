@@ -160,7 +160,7 @@ export function StartPage() {
                 <TextStyled ratio={sizeRatio} size="m">
                     Узнай больше в&nbsp;этой игре
                     <br/>
-                    и&nbsp;получай призы!
+                    и&nbsp;получи призы!
                 </TextStyled>
             </TextWrapper>
             <ButtonStyled ratio={sizeRatio} onClick={next}>
