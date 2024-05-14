@@ -234,6 +234,14 @@ export function FinalPage() {
         window.open('https://rabota.mtsbank.ru/st', '_blank');
     };
 
+    const handleSaveEmail = (email) => {
+        const timestamp = new Date().toLocaleString().replace(/\s/g, '');
+        const url = `https://script.google.com/macros/s/AKfycbx03kiBcqcC5y4FwXuAzWWfI67I19PvEETFemuWTq-cJuNcOaVuwfB7LPNxpwLMWU3V/exec?timestamp=${timestamp}&email=${email}`
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.send();
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -242,6 +250,7 @@ export function FinalPage() {
         }
 
         reachMetrikaGoal('email');
+        handleSaveEmail(email)
         setIsSent(true);
     }
 
