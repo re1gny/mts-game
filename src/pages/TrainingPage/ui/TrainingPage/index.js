@@ -15,6 +15,7 @@ import { ReactComponent as Cursor } from '../../assets/cursor.svg';
 import {useCallback, useEffect, useState} from "react";
 import throttle from "lodash/throttle";
 import {CHARACTER_STEP} from "../../../../widgets/Game";
+import {reachMetrikaGoal} from "../../../../shared/utils/reachMetrikaGoal";
 
 const Wrapper = styled(motion.div)`
     position: relative;
@@ -129,6 +130,11 @@ export function TrainingPage() {
         []
     );
 
+    const handleNext = () => {
+        reachMetrikaGoal('training');
+        next();
+    }
+
     useEffect(() => {
         return stickX.on('change', () => handleMove())
     }, []);
@@ -199,7 +205,7 @@ export function TrainingPage() {
                     </CharacterStyled>
                 </CharacterWrapperStyled>
             </PanelStyled>
-            <ButtonStyled ratio={sizeRatio} onClick={next}>
+            <ButtonStyled ratio={sizeRatio} onClick={handleNext}>
                 Понятно
             </ButtonStyled>
         </Wrapper>

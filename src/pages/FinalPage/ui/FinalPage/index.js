@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import styled from "@emotion/styled";
 import {AnimatePresence, motion} from "framer-motion";
 import {Logo} from "../../../../shared/ui/Logo";
@@ -20,6 +20,7 @@ import { ReactComponent as Character2 } from '../../assets/character2.svg';
 import { ReactComponent as Character3 } from '../../assets/character3.svg';
 import { ReactComponent as Heart } from '../../assets/heart.svg';
 import { ReactComponent as ArrowRight } from '../../assets/arrowRight.svg';
+import {reachMetrikaGoal} from "../../../../shared/utils/reachMetrikaGoal";
 
 const Wrapper = styled(motion.div)`
     position: relative;
@@ -229,6 +230,7 @@ export function FinalPage() {
     const isSendingEmailDisabled = !email.length || !/\S+@\S+\.\S+/.test(email) || !isAgreed;
 
     const handleInternship = () => {
+        reachMetrikaGoal('internship');
         window.open('https://rabota.mtsbank.ru/st', '_blank');
     };
 
@@ -239,8 +241,13 @@ export function FinalPage() {
             return;
         }
 
+        reachMetrikaGoal('email');
         setIsSent(true);
     }
+
+    useEffect(() => {
+        reachMetrikaGoal('lvl3_finish');
+    }, []);
 
     return (
         <Wrapper

@@ -10,6 +10,8 @@ import {LEVEL_3_GRADE} from "../../../../entities/Character";
 import {Title} from "../../../../entities/Intro";
 import { ReactComponent as Level3sign } from "../../assets/level3sign.svg";
 import { ReactComponent as Level3character } from "../../assets/level3character.svg";
+import {reachMetrikaGoal} from "../../../../shared/utils/reachMetrikaGoal";
+import {useEffect} from "react";
 
 const Wrapper = styled(Modal)`
     display: flex;
@@ -90,6 +92,17 @@ const ButtonStyled = styled(Button)`
 export function Level3Modal({className, opened, initial, onNext}) {
     const sizeRatio = useSizeRatio();
 
+    const handleNext = () => {
+        onNext?.();
+        reachMetrikaGoal('lvl3_start');
+    }
+
+    useEffect(() => {
+        if (opened) {
+            reachMetrikaGoal('lvl2_finish');
+        }
+    }, [opened]);
+
     return (
         <Wrapper className={className} opened={opened} initial={initial} ratio={sizeRatio}>
             <TitleStyled ratio={sizeRatio}>
@@ -118,7 +131,7 @@ export function Level3Modal({className, opened, initial, onNext}) {
                         ))}
                     </TasksListStyled>
                 </PanelStyled>
-                <ButtonStyled ratio={sizeRatio} onClick={onNext}>
+                <ButtonStyled ratio={sizeRatio} onClick={handleNext}>
                     Уровень #3
                 </ButtonStyled>
             </ContentStyled>

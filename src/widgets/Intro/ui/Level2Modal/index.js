@@ -11,6 +11,8 @@ import {Title} from "../../../../entities/Intro";
 import { ReactComponent as Level2sign1 } from "../../assets/level2sign1.svg";
 import { ReactComponent as Level2sign2 } from "../../assets/level2sign2.svg";
 import { ReactComponent as Level2character } from "../../assets/level2character.svg";
+import {useEffect} from "react";
+import {reachMetrikaGoal} from "../../../../shared/utils/reachMetrikaGoal";
 
 const Wrapper = styled(Modal)`
     display: flex;
@@ -101,6 +103,17 @@ const ButtonStyled = styled(Button)`
 export function Level2Modal({className, opened, initial, onNext}) {
     const sizeRatio = useSizeRatio();
 
+    const handleNext = () => {
+        onNext?.();
+        reachMetrikaGoal('lvl2_start');
+    }
+
+    useEffect(() => {
+        if (opened) {
+            reachMetrikaGoal('lvl1_finish');
+        }
+    }, [opened]);
+
     return (
         <Wrapper className={className} opened={opened} initial={initial} ratio={sizeRatio}>
             <TitleStyled ratio={sizeRatio}>
@@ -128,7 +141,7 @@ export function Level2Modal({className, opened, initial, onNext}) {
                         ))}
                     </TasksListStyled>
                 </PanelStyled>
-                <ButtonStyled ratio={sizeRatio} onClick={onNext}>
+                <ButtonStyled ratio={sizeRatio} onClick={handleNext}>
                     Уровень #2
                 </ButtonStyled>
             </ContentStyled>

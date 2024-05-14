@@ -6,6 +6,8 @@ import {Button} from "../../../../shared/ui/Button";
 import {Image} from "../../../../shared/ui/Image";
 import {useSizeRatio} from "../../../../shared/hooks/useSizeRatio";
 import { ReactComponent as Lose } from '../../assets/lose.svg';
+import {useEffect} from "react";
+import {reachMetrikaGoal} from "../../../../shared/utils/reachMetrikaGoal";
 
 const Wrapper = styled(Modal)`
     display: flex;
@@ -39,6 +41,17 @@ const ButtonStyled = styled(Button)`
 export function LoseModal({className, opened, onReset}) {
     const sizeRatio = useSizeRatio();
 
+    const handleReset = () => {
+        onReset?.();
+        reachMetrikaGoal('again');
+    }
+
+    useEffect(() => {
+        if (opened) {
+            reachMetrikaGoal('lose');
+        }
+    }, [opened]);
+
     return (
         <Wrapper className={className} opened={opened} ratio={sizeRatio}>
             <PanelStyled ratio={sizeRatio}>
@@ -53,7 +66,7 @@ export function LoseModal({className, opened, onReset}) {
                 </TextStyled>
                 <ImageStyled src={Lose} ratio={sizeRatio} />
             </PanelStyled>
-            <ButtonStyled ratio={sizeRatio} onClick={onReset}>
+            <ButtonStyled ratio={sizeRatio} onClick={handleReset}>
                 Играть снова
             </ButtonStyled>
         </Wrapper>

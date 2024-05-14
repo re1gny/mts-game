@@ -4,6 +4,8 @@ import {Panel} from "../../../../shared/ui/Panel";
 import {Text} from "../../../../shared/ui/Text";
 import {Button} from "../../../../shared/ui/Button";
 import {useSizeRatio} from "../../../../shared/hooks/useSizeRatio";
+import {useEffect} from "react";
+import {reachMetrikaGoal} from "../../../../shared/utils/reachMetrikaGoal";
 
 const Wrapper = styled(Modal)`
     display: flex;
@@ -40,8 +42,20 @@ export function MultipleLoseModal({className, opened, onReset}) {
     const sizeRatio = useSizeRatio();
 
     const handleInternship = () => {
+        reachMetrikaGoal('internship_lose');
         window.open('https://rabota.mtsbank.ru/st', '_blank');
     };
+
+    const handleReset = () => {
+        onReset?.();
+        reachMetrikaGoal('again');
+    }
+
+    useEffect(() => {
+        if (opened) {
+            reachMetrikaGoal('lose');
+        }
+    }, [opened]);
 
     return (
         <Wrapper className={className} opened={opened} ratio={sizeRatio}>
@@ -55,7 +69,7 @@ export function MultipleLoseModal({className, opened, onReset}) {
                     <br/>
                     сможешь выиграть приз!
                 </TextStyled>
-                <ButtonStyled ratio={sizeRatio} onClick={onReset}>
+                <ButtonStyled ratio={sizeRatio} onClick={handleReset}>
                     Играть снова
                 </ButtonStyled>
             </PanelStyled>

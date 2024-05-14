@@ -14,6 +14,7 @@ import { ReactComponent as Sign2 } from '../../assets/sign2.svg';
 import { ReactComponent as Sign3 } from '../../assets/sign3.svg';
 import { ReactComponent as Sign4 } from '../../assets/sign4.svg';
 import { ReactComponent as Sign5 } from '../../assets/sign5.svg';
+import {reachMetrikaGoal} from "../../../../shared/utils/reachMetrikaGoal";
 
 const Wrapper = styled(motion.div)`
     position: relative;
@@ -132,6 +133,11 @@ export function StartPage() {
     const sizeRatio = useSizeRatio();
     const {next} = useRouter();
 
+    const handleNext = () => {
+        reachMetrikaGoal('start');
+        next();
+    };
+
     return (
         <Wrapper
             ratio={sizeRatio}
@@ -163,7 +169,7 @@ export function StartPage() {
                     и&nbsp;получи призы!
                 </TextStyled>
             </TextWrapper>
-            <ButtonStyled ratio={sizeRatio} onClick={next}>
+            <ButtonStyled ratio={sizeRatio} onClick={handleNext}>
                 Играть
             </ButtonStyled>
         </Wrapper>

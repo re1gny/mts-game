@@ -11,6 +11,7 @@ import {LEVEL_1_GRADE} from "../../../../entities/Character";
 import { ReactComponent as Level1sign1 } from "../../assets/level1sign1.svg";
 import { ReactComponent as Level1sign2 } from "../../assets/level1sign2.svg";
 import { ReactComponent as Level1character } from "../../assets/level1character.svg";
+import {reachMetrikaGoal} from "../../../../shared/utils/reachMetrikaGoal";
 
 const Wrapper = styled(Modal)`
     display: flex;
@@ -101,6 +102,11 @@ const ButtonStyled = styled(Button)`
 export function Level1Modal({className, opened, initial, onNext}) {
     const sizeRatio = useSizeRatio();
 
+    const handleNext = () => {
+        reachMetrikaGoal('lvl1_start');
+        onNext?.();
+    }
+
     return (
         <Wrapper className={className} opened={opened} initial={initial} ratio={sizeRatio}>
             <TitleStyled ratio={sizeRatio}>
@@ -124,7 +130,7 @@ export function Level1Modal({className, opened, initial, onNext}) {
                         ))}
                     </TasksListStyled>
                 </PanelStyled>
-                <ButtonStyled ratio={sizeRatio} onClick={onNext}>
+                <ButtonStyled ratio={sizeRatio} onClick={handleNext}>
                     Уровень #1
                 </ButtonStyled>
             </ContentStyled>
