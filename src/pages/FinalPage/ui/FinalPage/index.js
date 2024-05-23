@@ -231,7 +231,7 @@ export function FinalPage() {
 
     const handleInternship = () => {
         reachMetrikaGoal('internship');
-        window.open('https://rabota.mtsbank.ru/st', '_blank');
+        window.open('https://rabota.mtsbank.ru/st?utm_source=specialproject&utm_medium=ft&utm_campaign=game', '_blank');
     };
 
     const handleSaveEmail = (email) => {

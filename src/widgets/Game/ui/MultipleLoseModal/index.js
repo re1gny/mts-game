@@ -43,7 +43,7 @@ export function MultipleLoseModal({className, opened, onReset}) {
 
     const handleInternship = () => {
         reachMetrikaGoal('internship_lose');
-        window.open('https://rabota.mtsbank.ru/st', '_blank');
+        window.open('https://rabota.mtsbank.ru/st?utm_source=specialproject&utm_medium=ft&utm_campaign=game', '_blank');
     };
 
     const handleReset = () => {
