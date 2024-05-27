@@ -134,6 +134,8 @@ export function StartPage() {
     const {next} = useRouter();
 
     const handleNext = () => {
+        // eslint-disable-next-line no-undef
+        _tmr?.push({ type: 'reachGoal', id: 3517499, goal: 'start'});
         reachMetrikaGoal('start');
         next();
     };
