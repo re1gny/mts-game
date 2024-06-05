@@ -159,16 +159,16 @@ export function StartPage() {
             <Sign5ImageStyled src={Sign5} ratio={sizeRatio} />
             <TextWrapper ratio={sizeRatio}>
                 <TextStyled ratio={sizeRatio} size="m">
-                    Ищешь классную работу,
+                    Лови задачки,
                     <br/>
-                    но&nbsp;у&nbsp;тебя&nbsp;нет&nbsp;опыта?
+                    но избегай слишком
                     <br/>
-                    Приходи в&nbsp;МТС&nbsp;Финтех!
+                    больших.
                 </TextStyled>
                 <TextStyled ratio={sizeRatio} size="m">
-                    Узнай больше в&nbsp;этой игре
+                    Расти в размере
                     <br/>
-                    и&nbsp;получи призы!
+                    и выигрывай призы!
                 </TextStyled>
             </TextWrapper>
             <ButtonStyled ratio={sizeRatio} onClick={handleNext}>

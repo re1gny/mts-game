@@ -18,7 +18,7 @@ export const LEVEL_1_TASKS = [
         image: Level1task2,
     },
     {
-        name: 'Узнать про\nпродукты\xA0МТС',
+        name: 'Узнать про\nпродукты\xA0МТС Финтех',
         image: Level1task3,
     },
 ];
